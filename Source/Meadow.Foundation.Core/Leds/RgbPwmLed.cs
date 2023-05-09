@@ -36,36 +36,55 @@ namespace Meadow.Foundation.Leds
             get => isOn;
             set
             {
-                SetColor(Color, value ? 1 : 0);
+                Brightness = value ? 1 : 0;
                 isOn = value;
             }
         }
         bool isOn;
 
         /// <summary>
-        /// The current LED color
+        /// Gets or sets the current LED color
         /// </summary>
-        public Color Color { get; protected set; } = Color.White;
+        public Color Color
+        {
+            get => color;
+            set
+            {
+                RedPwmPort.DutyCycle = (float)(Color.R / 255.0 * maxRedDutyCycle * brightness);
+                GreenPwmPort.DutyCycle = (float)(Color.G / 255.0 * maxGreenDutyCycle * brightness);
+                BluePwmPort.DutyCycle = (float)(Color.B / 255.0 * maxBlueDutyCycle * brightness);
+            }
+        }
+        private Color color = Color.White;
 
         /// <summary>
-        /// The brightness value assigned to the LED
+        /// Gets or sets the brightness of the LED, controlled by a PWM signal
         /// </summary>
-        public float Brightness { get; protected set; } = 1f;
+        public float Brightness
+        {
+            get => brightness;
+            set
+            {
+                brightness = Math.Clamp(value, 0, 1);
+                Color = Color;
+            }
+        }
+        private float brightness = 1f;
 
         /// <summary>
         /// The red LED port
         /// </summary>
-        protected IPwmPort RedPwm { get; set; }
+        protected IPwmPort RedPwmPort { get; set; }
 
         /// <summary>
         /// The blue LED port
         /// </summary>
-        protected IPwmPort BluePwm { get; set; }
+        protected IPwmPort BluePwmPort { get; set; }
 
         /// <summary>
         /// The green LED port
         /// </summary>
-        protected IPwmPort GreenPwm { get; set; }
+        protected IPwmPort GreenPwmPort { get; set; }
 
         /// <summary>
         /// The common type (common annode or common cathode)
@@ -100,9 +119,9 @@ namespace Meadow.Foundation.Leds
             IPwmPort bluePwmPort,
             CommonType commonType = CommonType.CommonCathode)
         {
-            RedPwm = redPwmPort;
-            GreenPwm = greenPwmPort;
-            BluePwm = bluePwmPort;
+            RedPwmPort = redPwmPort;
+            GreenPwmPort = greenPwmPort;
+            BluePwmPort = bluePwmPort;
 
             RedForwardVoltage = TypicalForwardVoltage.Red;
             GreenForwardVoltage = TypicalForwardVoltage.Green;
@@ -191,9 +210,9 @@ namespace Meadow.Foundation.Leds
 
             Common = commonType;
 
-            RedPwm = redPwmPort;
-            GreenPwm = greenPwmPort;
-            BluePwm = bluePwmPort;
+            RedPwmPort = redPwmPort;
+            GreenPwmPort = greenPwmPort;
+            BluePwmPort = bluePwmPort;
 
             maxRedDutyCycle = Helpers.CalculateMaximumDutyCycle(RedForwardVoltage);
             maxGreenDutyCycle = Helpers.CalculateMaximumDutyCycle(GreenForwardVoltage);
@@ -208,7 +227,8 @@ namespace Meadow.Foundation.Leds
         /// <param name="redLedForwardVoltage">The forward voltage for the red LED</param>
         /// <param name="greenLedForwardVoltage">The forward voltage for the green LED</param>
         /// <param name="blueLedForwardVoltage">The forward voltage for the blue LED</param>
-        protected void ValidateForwardVoltages(Voltage redLedForwardVoltage,
+        protected void ValidateForwardVoltages(
+            Voltage redLedForwardVoltage,
             Voltage greenLedForwardVoltage,
             Voltage blueLedForwardVoltage)
         {
@@ -233,29 +253,15 @@ namespace Meadow.Foundation.Leds
         /// </summary>
         protected void ResetPwmPorts()
         {
-            RedPwm.Frequency = GreenPwm.Frequency = BluePwm.Frequency = DefaultFrequency;
-            RedPwm.DutyCycle = GreenPwm.DutyCycle = BluePwm.DutyCycle = DEFAULT_DUTY_CYCLE;
+            RedPwmPort.Frequency = GreenPwmPort.Frequency = BluePwmPort.Frequency = DefaultFrequency;
+            RedPwmPort.DutyCycle = GreenPwmPort.DutyCycle = BluePwmPort.DutyCycle = DEFAULT_DUTY_CYCLE;
 
             // invert the PWM signal if it common anode
-            RedPwm.Inverted = GreenPwm.Inverted = BluePwm.Inverted = Common == CommonType.CommonAnode;
+            RedPwmPort.Inverted = GreenPwmPort.Inverted = BluePwmPort.Inverted = Common == CommonType.CommonAnode;
 
-            RedPwm.Start();
-            GreenPwm.Start();
-            BluePwm.Start();
-        }
-
-        /// <summary>
-        /// Set the led brightness
-        /// </summary>
-        /// <param name="brightness">Valid values are from 0 to 1, inclusive</param>
-        public void SetBrightness(float brightness)
-        {
-            if (brightness < 0 || brightness > 1)
-            {
-                throw new ArgumentOutOfRangeException(nameof(brightness), "error, brightness must be between 0, and 1");
-            }
-
-            SetColor(Color, brightness);
+            RedPwmPort.Start();
+            GreenPwmPort.Start();
+            BluePwmPort.Start();
         }
 
         /// <summary>
@@ -263,7 +269,7 @@ namespace Meadow.Foundation.Leds
         /// </summary>
         /// <param name="color">The LED color</param>
         /// <param name="brightness">Valid values are from 0 to 1, inclusive</param>
-        public void SetColor(Color color, float brightness = 1)
+        public void SetColorWithBrightness(Color color, float brightness = 1)
         {
             if (color == Color && brightness == Brightness)
             {
@@ -272,10 +278,6 @@ namespace Meadow.Foundation.Leds
 
             Color = color;
             Brightness = brightness;
-
-            RedPwm.DutyCycle = (float)(Color.R / 255.0 * maxRedDutyCycle * brightness);
-            GreenPwm.DutyCycle = (float)(Color.G / 255.0 * maxGreenDutyCycle * brightness);
-            BluePwm.DutyCycle = (float)(Color.B / 255.0 * maxBlueDutyCycle * brightness);
         }
     }
 }

@@ -74,7 +74,7 @@ namespace Meadow.Foundation.Leds
 
             await StopAnimation();
 
-            SetColor(color);
+            Color = color;
 
             await StartBlink(onDuration, offDuration, highBrightness, lowBrightness);
         }
@@ -105,10 +105,10 @@ namespace Meadow.Foundation.Leds
                 {
                     while (cancellationTokenSource.Token.IsCancellationRequested == false)
                     {
-                        SetBrightness(highBrightness);
+                        Brightness = highBrightness;
                         Thread.Sleep(onDuration);
 
-                        SetBrightness(lowBrightness);
+                        Brightness = lowBrightness;
                         Thread.Sleep(offDuration);
                     }
                 }, cancellationTokenSource.Token, TaskCreationOptions.LongRunning);
@@ -160,7 +160,7 @@ namespace Meadow.Foundation.Leds
 
             await StopAnimation();
 
-            SetColor(color);
+            Color = color;
 
             await StartPulse(pulseDuration, highBrightness, lowBrightness);
         }
@@ -214,7 +214,7 @@ namespace Meadow.Foundation.Leds
                             brightness = highBrightness;
                         }
 
-                        SetBrightness(brightness);
+                        Brightness = brightness;
 
                         Thread.Sleep(intervalTime);
                     }

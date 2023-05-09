@@ -9,9 +9,18 @@ namespace Meadow.Foundation.Leds
     public partial class RgbLed : IRgbLed
     {
         /// <summary>
-        /// The current LED color
+        /// Gets or sets a color to the RGB LED
         /// </summary>
-        public RgbLedColors Color { get; protected set; } = RgbLedColors.White;
+        public RgbLedColors Color
+        {
+            get => color;
+            set
+            {
+                color = value;
+                IsOn = true;
+            }
+        }
+        private RgbLedColors color = RgbLedColors.White;
 
         /// <summary>
         /// The red LED port
@@ -41,7 +50,7 @@ namespace Meadow.Foundation.Leds
             get => isOn;
             set => UpdateLed(isOn = value);
         }
-        bool isOn;
+        private bool isOn;
 
         /// <summary>
         /// Create instance of RgbLed
@@ -79,17 +88,6 @@ namespace Meadow.Foundation.Leds
             GreenPort = greenPort;
             BluePort = bluePort;
             Common = commonType;
-        }
-
-        /// <summary>
-        /// Sets the current color of the LED.
-        /// </summary>
-        /// <param name="color">The color value</param>
-        public void SetColor(RgbLedColors color)
-        {
-            Color = color;
-
-            IsOn = true;
         }
 
         /// <summary>

@@ -58,7 +58,7 @@ namespace Meadow.Foundation.Leds
         {
             await StopAnimation();
 
-            SetColor(color);
+            Color = color;
 
             await StartBlink(onDuration, offDuration);
         }

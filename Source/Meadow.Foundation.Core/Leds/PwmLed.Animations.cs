@@ -64,10 +64,10 @@ namespace Meadow.Foundation.Leds
                 {
                     while (cancellationTokenSource.Token.IsCancellationRequested == false)
                     {
-                        SetBrightness(highBrightness);
+                        Brightness = highBrightness;
                         Thread.Sleep(highBrightnessDuration);
 
-                        SetBrightness(lowBrightness);
+                        Brightness = lowBrightness;
                         Thread.Sleep(lowBrightnessDuration);
                     }
                 }, cancellationTokenSource.Token, TaskCreationOptions.LongRunning);
@@ -139,7 +139,7 @@ namespace Meadow.Foundation.Leds
                             brightness = highBrightness;
                         }
 
-                        SetBrightness(brightness);
+                        Brightness = brightness;
 
                         Thread.Sleep(intervalTime);
                     }

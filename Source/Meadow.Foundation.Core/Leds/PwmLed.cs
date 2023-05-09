@@ -52,7 +52,11 @@ namespace Meadow.Foundation.Leds
         /// <summary>
         /// The brightness value assigned to the LED
         /// </summary>
-        public float Brightness { get; protected set; } = 1f;
+        public float Brightness
+        {
+            get => Port.DutyCycle / maximumPwmDuty;
+            set => Port.DutyCycle = maximumPwmDuty * Math.Clamp(value, 0, 1);
+        }
 
         /// <summary>
         /// Is the object disposed
@@ -112,27 +116,6 @@ namespace Meadow.Foundation.Leds
             if (forwardVoltage < MIN_FORWARD_VOLTAGE || forwardVoltage > MAX_FORWARD_VOLTAGE)
             {
                 throw new ArgumentOutOfRangeException(nameof(forwardVoltage), "error, forward voltage must be between 0, and 3.3");
-            }
-        }
-
-        /// <summary>
-        /// Sets the LED to a specific brightness.
-        /// </summary>
-        /// <param name="brightness">Valid values are from 0 to 1, inclusive</param>
-        public void SetBrightness(float brightness)
-        {
-            if (brightness < 0 || brightness > 1)
-            {
-                throw new ArgumentOutOfRangeException(nameof(brightness), "brightness must be between 0 and 1, inclusive.");
-            }
-
-            Brightness = brightness;
-
-            Port.DutyCycle = maximumPwmDuty * Brightness;
-
-            if (!Port.State)
-            {
-                Port.Start();
             }
         }
 
