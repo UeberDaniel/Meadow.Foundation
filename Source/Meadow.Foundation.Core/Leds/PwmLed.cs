@@ -1,5 +1,4 @@
 using Meadow.Hardware;
-using Meadow.Peripherals.Leds;
 using Meadow.Units;
 using System;
 
