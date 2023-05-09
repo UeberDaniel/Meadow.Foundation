@@ -1,4 +1,4 @@
-﻿namespace Meadow.Peripherals.Leds
+﻿namespace Meadow.Foundation.Leds
 {
     public enum CommonType
     {

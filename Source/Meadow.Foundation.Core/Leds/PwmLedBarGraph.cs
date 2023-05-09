@@ -114,7 +114,7 @@ namespace Meadow.Foundation.Leds
             }
 
             await pwmLeds[index].StopAnimation();
-            pwmLeds[index].SetBrightness(brightness);
+            pwmLeds[index].Brightness = brightness;
         }
 
         /// <summary>
@@ -156,7 +156,7 @@ namespace Meadow.Foundation.Leds
             foreach (var led in pwmLeds)
             {
                 await led.StopAnimation();
-                led.SetBrightness(brightness);
+                led.Brightness = brightness;
             }
         }
     }

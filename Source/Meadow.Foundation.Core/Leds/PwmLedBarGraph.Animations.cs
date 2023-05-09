@@ -116,13 +116,13 @@ namespace Meadow.Foundation.Leds
                     {
                         foreach (var led in pwmLeds)
                         {
-                            led.SetBrightness(highBrightness);
+                            led.Brightness = highBrightness;
                         }
                         Thread.Sleep(highBrightnessDuration);
 
                         foreach (var led in pwmLeds)
                         {
-                            led.SetBrightness(lowBrightness);
+                            led.Brightness = lowBrightness;
                         }
                         Thread.Sleep(lowBrightnessDuration);
                     }

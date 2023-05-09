@@ -22,7 +22,12 @@ namespace Meadow.Foundation.Leds
         /// <summary>
         /// A value between 0 and 1 that controls the number of LEDs that are activated
         /// </summary>
-        public float Percentage { get; protected set; }
+        public float Percentage
+        {
+            get => percentage;
+            set => SetPercentage(value);
+        }
+        private float percentage;
 
         /// <summary>
         /// Create an LedBarGraph instance from an array of IPins
