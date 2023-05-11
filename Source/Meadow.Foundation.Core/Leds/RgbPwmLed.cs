@@ -49,9 +49,10 @@ namespace Meadow.Foundation.Leds
             get => color;
             set
             {
-                RedPwmPort.DutyCycle = (float)(Color.R / 255.0 * maxRedDutyCycle * brightness);
-                GreenPwmPort.DutyCycle = (float)(Color.G / 255.0 * maxGreenDutyCycle * brightness);
-                BluePwmPort.DutyCycle = (float)(Color.B / 255.0 * maxBlueDutyCycle * brightness);
+                color = value;
+                RedPwmPort.DutyCycle = (float)(color.R / 255.0 * maxRedDutyCycle * brightness);
+                GreenPwmPort.DutyCycle = (float)(color.G / 255.0 * maxGreenDutyCycle * brightness);
+                BluePwmPort.DutyCycle = (float)(color.B / 255.0 * maxBlueDutyCycle * brightness);
             }
         }
         private Color color = Color.White;
